@@ -6,7 +6,7 @@ project = 'Pymatsci'
 copyright = '2022, Pymatsci'
 author = 'C.L. Qin'
 
-release = '0.1'
+release = '1.0.0'
 version = '1.0.0'
 
 # -- General configuration
