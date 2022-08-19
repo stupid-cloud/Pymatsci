@@ -1,22 +1,20 @@
-.. Pymatsci documentation master file, created by
-   sphinx-quickstart on Fri Aug 19 13:12:00 2022.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Welcome to Lumache's documentation!
+===================================
 
-Welcome to Pymatsci's documentation!
-====================================
+**Pymatgen**  (Python Materials Science) is a robust, open-source Python library for materials analysis. It is further packaged and developed on the basis of pymatgen, a very powerful package of material analysis.
+
+
+Check out the :doc:`usage` section for further information, including
+how to :ref:`installation` the project.
+
+.. note::
+
+   Although the current project is still very crude, it is under active development.
+
+Contents
+--------
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
-   test
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   usage
+   api
