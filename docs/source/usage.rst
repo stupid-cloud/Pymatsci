@@ -40,10 +40,10 @@ magic graphene modeling.
 
 .. code:: python
 
-   from pymatsci.model import Graphene   # 导入石墨烯模块
-   model = Graphene(10, 0, 1.42, ['C'], 4)    # 输入手性参数、键长、原子种类以及周期，默认是碳纳米管
-   model.write_vasp('./POSCAR')  # 输入存储的地址和文件名，产生vasp的输入文件
-   # model.write_lammps('./data.txt')   # 产生lammps的输入文件
+   from pymatsci.model import Graphene        # 导入石墨烯模块
+   model = Graphene(10, 0, 1.42, ['C'], 4)    # 输入手性参数、键长、原子种类以及周期
+   model.write_vasp('./POSCAR')               # 输入存储的地址和文件名，产生vasp的输入文件
+   # model.write_lammps('./data.txt')         # 产生lammps的输入文件
 
 **Output**
 
@@ -66,10 +66,10 @@ Generated model:
 
 .. code:: python
 
-   from pymatsci.model import MagicGraphene
-   model = MagicGraphene(10, 5, 1.42, ['C'], 3.4)
+   from pymatsci.model import MagicGraphene         # 导入魔角石墨烯模块
+   model = MagicGraphene(10, 5, 1.42, ['C'], 3.4)   # 输入手性参数、键长、原子种类以及层间距
    model.write_vasp('./POSCAR')
-   # model.write_lammps('./data.txt')   # 产生lammps的输入文件
+   # model.write_lammps('./data.txt')   
 
 **Output**
 
@@ -92,10 +92,10 @@ Generated model:
 
 .. code:: python
 
-   from pymatsci.model import Nanotube
-   model = Nanotube(10, 5, 1.42, ['C'], 5)
+   from pymatsci.model import Nanotube       # 导入纳米管模块
+   model = Nanotube(10, 5, 1.42, ['C'], 5)   # 输入手性参数、键长、原子种类以及周期
    model.write_vasp('./POSCAR')
-   # model.write_lammps('./data.txt')   # 产生lammps的输入文件
+   # model.write_lammps('./data.txt')   
 
 **Output**
 
