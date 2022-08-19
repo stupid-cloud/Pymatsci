@@ -1,3 +1,7 @@
+.. figure:: index/pymatsci.png
+   :alt: pymatsci
+   :align: center
+
 Welcome to Pymatsci's documentation!
 ===================================
 
