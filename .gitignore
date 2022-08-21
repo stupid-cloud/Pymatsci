@@ -1,0 +1,11 @@
+adsorption/
+build/
+dist/
+pymatsci.egg-info
+rhe/
+CONTCAR
+data.dat
+main.py
+OUTCAR
+PDOS_USER.dat
+POSCAR
