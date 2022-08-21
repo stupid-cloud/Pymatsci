@@ -183,6 +183,23 @@ where T is the temperature, V is the volume of the container, q is the partition
 
    S = \frac{U(T)}{T} + Nk\ln q + k
 
+Enthalpy (H) and Gibbs free energy (G) can be obtained from U and S:
+
+.. math::
+
+   H = U(T) + pV 
+
+.. math::
+
+   G = H - TS  
+
+The expression for H seems to be a little trickier, since we don't know V. However, for an perfect gas, pV=kT. Therefore,
+
+.. math::
+
+   H = U(T) + kT
+
+
 Considering the translational (q\ :sup:`t`), rotational (q\ :sup:`r`), vibrational (q\ :sup:`v`), and electron (q\ :sup:`e`) contributions we get
 
 .. math::
@@ -193,14 +210,9 @@ The translational partition function is:
 
 .. math::
 
-   q^t = \frac{{(2{\pi}mkT)}^{3/2}}{h^3}V
+   q^t = \frac{{(2{\pi}mkT)}^{3/2}}{h^3}V = \frac{{(2{\pi}mkT)}^{3/2}}{h^3}\frac{kT}p
 
-The second term in Equation is a little trickier, since we don't know V. However, for an perfect gas, pV=kT. Therefore,
-
-.. math::
-
-   q^t = \frac{{(2{\pi}mkT)}^{3/2}}{h^3}\frac{kT}p
-
+where h is Planck's constant. Therefore,
 
 The rotational partition function of a linear molecule (I\ :sub:`x` = 0, I\ :sub:`y` = I\ :sub:`z`) is
 
@@ -224,7 +236,7 @@ The vibration partition function is
 
    q^v = \prod\limits_k \frac{1}{1-{e^{-{hv/kT}}}} 
 
-Vibrational mode k=3n-5 for linear molecules and k=3n-6 for nonlinear molecules.
+where v is the vibration frequency. Vibrational mode k=3n-5 for linear molecules and k=3n-6 for nonlinear molecules.
 
 Electrons are generally in the ground state, so the partition function is
 
@@ -233,6 +245,17 @@ Electrons are generally in the ground state, so the partition function is
    q^e = g
 
 where g is the degeneracy of the electron ground state, or spin multiplicity.
+
+Assuming that the volume of a single molecule is cubic, zero-point energy comes from translational (z\ :sup:`t`) and vibrational (z\ :sup:`v`) contributions
+
+.. math::
+
+   z^t = \frac{3{h^2}}{8mV^{2/3}} = \frac{3h^2}{8m{(kT/p)}^{2/3}}
+   
+.. math::
+
+   z^v = \prod\limits_k 1/2hv
+
 
 [1] P. Atkins, J. De Paula, J. Keeler, Physical Chemistry, 11 ed., Oxford University Press, London, 2018.
 
