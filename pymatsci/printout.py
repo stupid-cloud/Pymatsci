@@ -3,15 +3,15 @@
 def print_author_info():
     """print author information"""
 
-    print('*'*49)
+    print('*'*53)
     print("*\tAuthor: C.L. Qin\tE-mail: clqin@foxmail.com\t*")
-    print('*' * 49)
+    print('*' * 53)
 
 
 def print_properties(properties):
     """print properties"""
 
-    print('-'*49)
+    print('-'*53)
     length = 0
     for i in properties.keys():
         i = len(i)
@@ -26,7 +26,7 @@ def print_properties(properties):
         if flag == 0:
             num -= 1
         print("{}{}:\t{}".format(key, '\t' * num, value))
-    print('-' * 49)
+    print('-' * 53)
 
 
 if __name__ == '__main__':

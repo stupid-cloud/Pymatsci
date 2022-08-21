@@ -189,7 +189,7 @@ class MagicGraphene(Nano):
         magic_theta = math.acos(0.5 * (self.m * self.m + self.n * self.n + 4 * self.m * self.n) / (
                     self.m * self.m + self.n * self.n + self.m * self.n))  
         # L = a * math.sqrt(self.m * self.m + self.n * self.n + self.m * self.n)
-        N = int(2 * ((self.n + self.m) * self.n + self.m * self.m))  
+        N = 2*int(2 * ((self.n + self.m) * self.n + self.m * self.m))
         L1 = self.n * a1 + self.m * a2
         L2 = self.rotation_ij(math.pi / 3) * L1
         lattice = list(np.array(L1).flatten()) + [0] + list(np.array(L2).flatten()) + [0] + [0, 0, 15]
@@ -200,7 +200,7 @@ class MagicGraphene(Nano):
 class Nanotube(Nano):
     """building a single nanotube"""
 
-    def __init__(self, n, m, period=1, bond_length=1.42, atom_type=['C']):
+    def __init__(self, n, m, bond_length=1.42, atom_type=['C'], period=1):
         super().__init__(n, m, bond_length, atom_type)
         self.period = period
 
