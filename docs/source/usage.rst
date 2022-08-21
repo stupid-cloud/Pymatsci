@@ -35,7 +35,7 @@ This page provides a series of tutorials on nanotube, graphene, and
 magic graphene modeling.
 
 1.1 Structural information of the model
-:::::::::::::::::::::::::::::::::::
+:::::::::::::::::::::::::::::::::::::::
 
 Both nanotubes and magic-angle graphene are built from single-layer graphene, and they have the same definition of chirality (n, m).
 
@@ -180,6 +180,30 @@ Generated model:
 .. figure:: usage/6.png
    :alt: 6
 
+2. Thermal correction
+>>>>>>>>>>>>>>>>>>>>>
 
 
- 
+Theory
+::::::
+
+Pymatsci uses a thermal correction similar to Gaussian, and the detailed thermodynamic derivation can be found in Atkins' Physical Chemistry.
+
+
+
+**Input**
+
+First you need to put CONTCAR and OUTCAR in the current folder.
+
+.. code:: python
+
+   from pymatsci.correction import ThermalCorrection   # 引入热学修正模块
+   t = ThermalCorrection(298.15, 101325, True, 3)      # 输入温度(K)、压强(Pa)、是否线型分子，自旋多重度
+   t.free_gas_correction()                             # 自由分子修正
+   t.printout()                                        # 打印输出
+
+**Output**
+
+.. figure:: usage/7.png
+   :alt: 7
+
