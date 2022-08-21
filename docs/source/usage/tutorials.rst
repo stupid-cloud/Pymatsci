@@ -183,7 +183,7 @@ where T is the temperature, V is the volume of the container, q is the partition
 
    S = \frac{U(T)}{T} + Nk\ln q + k
 
-Considering the translational (q\ :sup:`x`), rotational (q\ :sup:`x`), vibrational (q\ :sup:`x`), and electron (q\ :sup:`x`) contributions we get
+Considering the translational (q\ :sup:`t`), rotational (q\ :sup:`r`), vibrational (q\ :sup:`v`), and electron (q\ :sup:`e`) contributions we get
 
 .. math::
 
