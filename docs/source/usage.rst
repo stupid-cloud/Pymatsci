@@ -84,7 +84,7 @@ Total length(l):
 
 .. math::
 
-   l = \frac{{\sqrt 3 a\sqrt {{m^2} + {n^2} + mn} }}{{{g_1}}}
+   l = \frac{{3 b\sqrt {{m^2} + {n^2} + mn} }}{{{g_1}}}
 
 Chirality angle(𝜃):
 
