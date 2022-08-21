@@ -47,7 +47,7 @@ Total number of atoms(N):
 
    N = \frac{{2({n^2} + {m^2} + mn)p}}{{{g_1}}}
 
-where g1 is the greatest common divisor of n+2m and 2n+m, and p is the period.
+where g\ :sub:`1` is the greatest common divisor of n+2m and 2n+m, and p is the period.
 
 **Magic-angle graphene**
 
