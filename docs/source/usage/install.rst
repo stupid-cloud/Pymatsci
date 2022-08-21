@@ -14,8 +14,8 @@ Installation
 
 .. code:: pyth
 
-   pip install -i https://test.pypi.org/simple/ pymatsci
+   pip install pymatsci
 
-In addition, you can also visit `testpypi`_ to download.
+In addition, you can also visit `pypi`_ to download.
 
-.. _testpypi: https://test.pypi.org/project/pymatsci/
+.. _pypi: https://pypi.org/project/pymatsci/
