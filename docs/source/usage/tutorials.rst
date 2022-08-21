@@ -160,7 +160,7 @@ Generated model:
 
 
 2.1 Theory
-:::::::::
+::::::::::
 
 Pymatsci uses a thermal correction similar to Gaussian, and the detailed thermodynamic derivation can be found in Atkins' Physical Chemistry.
 The gases are assumed to be indistinguishable perfect gases with no interactions between them. The expressions for the internal energy (U) and entropy (S) of N molecules can be known from statistical thermodynamics:
@@ -183,7 +183,7 @@ where T is the temperature, V is the volume of the container, q is the partition
 
    S = \frac{U(T)}{T} + Nk\ln q + k
 
-Considering the translational (qt), rotational (qr), vibrational (qv), and electron (qe) contributions we get
+Considering the translational (q\ :sup:`x`), rotational (q\ :sup:`x`), vibrational (q\ :sup:`x`), and electron (q\ :sup:`x`) contributions we get
 
 .. math::
 
@@ -199,7 +199,7 @@ The second term in Equation is a little trickier, since we don't know V. However
 
 .. math::
 
-   q^t = \frac{{(2{\pi}mkT)}^{3/2}}{h^3}\frac{kt}p
+   q^t = \frac{{(2{\pi}mkT)}^{3/2}}{h^3}\frac{kT}p
 
 
 The rotational partition function of a linear molecule (I\ :sub:`x` = 0, I\ :sub:`y` = I\ :sub:`z`) is
@@ -239,7 +239,7 @@ where g is the degeneracy of the electron ground state, or spin multiplicity.
 [2] https://gaussian.com/thermo/
 
 2.1 Free gas
-:::::::::
+::::::::::::
 
 **Input**
 
