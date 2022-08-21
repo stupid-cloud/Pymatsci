@@ -1,19 +1,19 @@
 Usage
-^^^^^
+=====
 
 .. _installation:
 
 Installation
 ------------
 
-1.To use Pymatsci, first install pymatgen and numpy using pip:
+1.To use pymatsci, first install pymatgen and numpy using pip:
 
 .. code:: console
 
    pip install numpy
    pip install pymatgen
 
-2.Install Pymatsci
+2.Install pymatsci
 
 .. code:: pyth
 
@@ -25,14 +25,74 @@ In addition, you can also visit `testpypi`_ to download.
 
 Tutorials
 ---------
+
 This page presents a collection of tutorials.
 
 1. Nanostructure model
 >>>>>>>>>>>>>>>>>>>>>>
+
 This page provides a series of tutorials on nanotube, graphene, and
 magic graphene modeling.
 
-1.1 Graphene
+1.1 Structural information of the model
+:::::::::::::::::::::::::::::::::::
+
+Both nanotubes and magic-angle graphene are built from single-layer graphene, and they have the same definition of chirality (n, m).
+
+**Graphene**
+
+Total number of atoms(N):
+
+.. math::
+
+   N = \frac{{2({n^2} + {m^2} + mn)p}}{{{g_1}}}
+
+where g1 is the greatest common divisor of n+2m and 2n+m, and p is the period.
+
+**Magic-angle graphene**
+
+Total number of atoms(N):
+
+.. math::
+
+   N = \frac{{4({n^2} + {m^2} + mn)p}}{{{g_1}}}
+
+Magic angle(𝜃):
+
+.. math::
+
+   \theta  = ar\cos \frac{{{m^2} + {n^2} + 4mn}}{{2\sqrt {{m^2} + {n^2} + mn} }}
+
+**Nanotube**
+
+Total number of atoms(N):
+
+.. math::
+
+   N = \frac{{2({n^2} + {m^2} + mn)p}}{{{g_1}}}
+
+Diameter(d):
+
+.. math::
+
+   d = \frac{{\sqrt {{m^2} + {n^2} + mn} }}{\pi }\sqrt 3 b
+
+
+where b is the atomic bond length.
+
+Total length(l):
+
+.. math::
+
+   l = \frac{{\sqrt 3 a\sqrt {{m^2} + {n^2} + mn} }}{{{g_1}}}
+
+Chirality angle(𝜃):
+
+.. math::
+
+   \theta  = ar\cos (\frac{{2n + m}}{{2\sqrt {{m^2} + {n^2} + mn} }})
+
+1.2 Graphene
 ::::::::::::
 
 **Input**
@@ -59,8 +119,8 @@ Generated model:
    :alt: 2
 
 
-1.2 Magic Grapehe
-:::::::::::::::::
+1.3 Magic-angle graphene
+::::::::::::::::::::::::
 
 **Input**
 
@@ -85,7 +145,7 @@ Generated model:
    :alt: 4
 
 
-1.2 Nanotube
+1.4 Nanotube
 ::::::::::::
 
 **Input**
@@ -109,5 +169,7 @@ Generated model:
 
 .. figure:: usage/6.png
    :alt: 6
+
+
 
  
