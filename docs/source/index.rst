@@ -3,21 +3,21 @@
    :align: center
 
 Welcome to Pymatsci's documentation!
-===================================
+====================================
 
-**Pymatsci**  (Python Materials Science) is a robust, open-source Python library for materials analysis. It is further packaged and developed on the basis of **Pymatgen**, a very powerful package of material analysis.
+**Pymatsci**  (Python Materials Science) is a robust, open-source Python library for materials analysis. It is further packaged and developed on the basis of **Pymatgen**, a very powerful package of material analysis. Pymatsci is dedicated to quick and easy operations, so that people can get the results they want without taking too much time.
 
 
-Check out the :doc:`usage` section for further information, including how to :ref:`installation` the project.
+Check out the :doc:`./usage/index` section for further information, including how to :doc:`./usage/install` the project.
 
 .. note::
 
-   Although the current project is  very crude, it is under active development.
+   Although the current project is very crude, it is under active development.
 
 Contents
 --------
 
 .. toctree::
 
-   usage
-   api
+   usage/index.rst
+   api/index.rst
