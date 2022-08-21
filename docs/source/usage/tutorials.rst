@@ -234,6 +234,10 @@ Electrons are generally in the ground state, so the partition function is
 
 where g is the degeneracy of the electron ground state, or spin multiplicity.
 
+[1] P. Atkins, J. De Paula, J. Keeler, Physical Chemistry, 11 ed., Oxford University Press, London, 2018.
+
+[2] https://gaussian.com/thermo/
+
 2.1 Free gas
 :::::::::
 

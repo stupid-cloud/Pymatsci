@@ -3,8 +3,8 @@
 # -- Project information
 
 project = 'Pymatsci'
-copyright = '2021, C.L. Qin'
-author = 'Graziella'
+copyright = '2021, Qin'
+author = 'C.L. Qin'
 
 release = '1.0.0'
 version = '1.0.0'

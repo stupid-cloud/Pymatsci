@@ -9,7 +9,7 @@ Welcome to Pymatsci's documentation!
 
 
 
-Check out the :doc:`./usage/index` section for further information, including how to :doc:`\ ./usage/install` the project.Of course, you can also click `here`_ for pdf instructions.
+Check out the :doc:`./usage/index` section for further information, including how to :doc:`\ ./usage/install` the project. Of course, you can also click `here`_ for a pdf instruction.
 
 .. _here: https://pymatsci.readthedocs.io/_/downloads/en/latest/pdf/
 
