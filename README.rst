@@ -1,9 +1,1 @@
-Template for the Read the Docs tutorial
-=======================================
-
-This GitHub template includes fictional Python library
-with some basic Sphinx docs.
-
-Read the tutorial here:
-
-https://docs.readthedocs.io/en/stable/tutorial/
+**Pymatsci**  (Python Materials Science) is a robust, open-source Python library for materials analysis. It is further packaged and developed on the basis of **Pymatgen**, a very powerful package of material analysis. Pymatsci is dedicated to quick and easy operations, so that people can get the results they want without taking too much time.
