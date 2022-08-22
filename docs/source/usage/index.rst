@@ -4,4 +4,5 @@ Usage
 .. toctree::
 
    install
-   tutorials
+   tutorials/index
+   

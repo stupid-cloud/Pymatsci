@@ -22,5 +22,5 @@ Contents
 
 .. toctree::
 
-   usage/index.rst
-   api/index.rst
+   usage/index
+   api/index
