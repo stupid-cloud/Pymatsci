@@ -130,9 +130,7 @@ where E\ :sub:`DFT` is the energy of density functional calculations.
 
 [2] https://gaussian.com/thermo/
 
-[3] V. Wang, N. Xu, J.C. Liu, G. Tang, W.T. Geng, VASPKIT: A User-Friendly Interface Facilitating High-Throughput Computing and Analysis Using VASP Code, Computer Physics 
-
- Communications 267, 108033 (2021).
+[3] V. Wang, N. Xu, J.C. Liu, G. Tang, W.T. Geng, VASPKIT: A User-Friendly Interface Facilitating High-Throughput Computing and Analysis Using VASP Code, Computer Physics Communications 267, 108033 (2021).
 
 2.1 Free gas
 ::::::::::::
