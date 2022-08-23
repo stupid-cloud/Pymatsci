@@ -11,8 +11,8 @@ h = const.h
 h = FloatWithUnit(h, Unit('J s'))  # 普朗克常量 (J/s)
 
 
-class ThermalCorrection(object):
-    """thermodynamic correction"""
+class FreeGasCorrection(object):
+    """free gas correction"""
 
     def __init__(self, T, p, is_line, spin_muti):
         self.T = FloatWithUnit(T, Unit('K'))  # 温度(K)
@@ -20,7 +20,6 @@ class ThermalCorrection(object):
         vasp = VaspProcess()
         self.E_DFT = vasp.E_DFT
         self.sch_symbol = vasp.sch_symbol
-        self.atomic_mass = vasp.atomic_mass
         self.total_atomic_mass = vasp.total_atomic_mass
         self.moment_of_inertia = vasp.moment_of_inertia
         self.sigma = vasp.sigma
@@ -63,13 +62,13 @@ class ThermalCorrection(object):
         else:
             Er = 3/2*k*self.T  # 转动贡献(非线性分子)
         freq = self.freq_deal()
-
-        Ev = 0    # 振动贡献
+        Ev = 0
         for v in freq:  # 频率求和
             theta = h*v/k
-            Ev += k*theta*(1/2+1/(math.pow(math.e, theta/self.T)-1))
+            Ev += k*theta*(1/2+1/(math.pow(math.e, theta/self.T)-1))  # 振动贡献
         # Ev = FloatWithUnit(Ev, Unit('J'))
-        return FloatWithUnit(Et+Er+Ev, Unit('J'))
+        Ee = 0  # 电子贡献
+        return FloatWithUnit(Et+Er+Ev+Ee, Unit('J'))
 
     def Scorrection(self):
         """entropy correction"""
@@ -78,27 +77,26 @@ class ThermalCorrection(object):
             Sr = k*(math.log(self.qr1())+1)     # 转动贡献(线性分子)
         else:
             Sr = k * (math.log(self.qr2())+3/2)  # 转动贡献(非线性分子)
-        Sv = 0      # 振动贡献
+
+        Sv = 0
         freq = self.freq_deal()
         for v in freq:  # 频率求和
             theta = h*v/k
             Sv += theta/self.T/(math.pow(math.e, theta/self.T)-1)-math.log(1-math.pow(math.e, -theta/self.T))
+        Sv = Sv * k   # 振动贡献
         Se = k*(math.log(self.qe())+0)     # 电子贡献
-        return St+Sr+Se+k
+        return St+Sr+Se+Sv+k
 
     def Zcorrection(self):
         """zero point energy"""
-        m = self.total_atomic_mass
 
-        m = float(m)
-        Zt =3*h*h/8/m/math.pow(self.V, 2/3)  # 平动零点能
         freq = self.freq_deal()
         fre = 0  # 振动零点能
         for v in freq:  # 频率求和
             fre += v
         Zv = 1/2*fre*h
         # print(Zt .to('eV'), Zv.to('eV'))
-        return FloatWithUnit(Zv+Zt, Unit('J'))
+        return FloatWithUnit(Zv, Unit('J'))
 
     def freq_deal(self):
         """Imaginary frequency and related processing of vibration degrees of freedom"""
@@ -143,8 +141,7 @@ class ThermalCorrection(object):
         print_properties(properties2)
         print_properties(properties3)
 
-
-    def free_gas_correction(self):
+    def correction(self):
         """free gas correction"""
         self.Uz = self.Zcorrection().to('eV')
         self.S = self.Scorrection().to('eV K^-1')
@@ -153,15 +150,85 @@ class ThermalCorrection(object):
         self.G = self.H - self.T * self.S
 
 
+class AdsorbedGasCorrection(object):
+    """adsorbed gas correction"""
+
+    def __init__(self, T):
+        self.T = FloatWithUnit(T, Unit('K'))  # 温度(K)
+        vasp = VaspProcess()
+        self.vib_freq = vasp.vib_freq
+        self.E_DFT = vasp.E_DFT
+
+    def Ucorrection(self):
+        """internal energy correction"""
+        freq = self.freq_deal()
+        Ev = 0    # 振动贡献
+        for v in freq:  # 频率求和
+            theta = h*v/k
+            Ev += k*theta*(1/2+1/(math.pow(math.e, theta/self.T)-1))
+        # Ev = FloatWithUnit(Ev, Unit('J'))
+        return FloatWithUnit(Ev, Unit('J'))
+
+    def Scorrection(self):
+        """entropy correction"""
+        # 振动贡献
+        Sv = 0
+        freq = self.freq_deal()
+        for v in freq:  # 频率求和
+            theta = h*v/k
+            Sv += theta/self.T/(math.pow(math.e, theta/self.T)-1)-math.log(1-math.pow(math.e, -theta/self.T))
+        Sv = k * Sv
+        return FloatWithUnit(Sv, Unit('J K^-1'))
+
+    def Zcorrection(self):
+        """zero point energy"""
+
+        freq = self.freq_deal()
+        fre = 0  # 振动零点能
+        for v in freq:  # 频率求和
+            fre += v
+        Zv = 1/2*fre*h
+        # print(Zt .to('eV'), Zv.to('eV'))
+        return FloatWithUnit(Zv, Unit('J'))
+
+    def freq_deal(self):
+        """Imaginary frequency and related processing of vibration degrees of freedom"""
+        real_freq, imag_freq, real_num, imag_num = self.vib_freq  # 计算的得到的频率
+        for index in range(len(real_freq)):
+            if real_freq[index] < 1.49896E12:
+                real_freq[index] = 1.49896E12
+
+        return real_freq
+
+    def printout(self):
+        """print information"""
+        properties1 = {"Temperature (T)": self.T}
+        properties2 = {'Energy of DFT (E_DFT)': self.E_DFT, "Zero-point energy (E_ZPE)": self.Uz,
+                      "Thermal correction to U(T)": self.U, "Thermal correction to H(T)": self.H, "Thermal correction to G(T)": self.G, "Entropy S": self.S,
+                      "Entropy contribution T*S": self.T * self.S}
+        properties3 = {"corrected E_DFT": self.E_DFT+self.Uz, "Corrected U(T)": self.E_DFT+self.Uz+self.U,
+                      "Corrected H(T)": self.E_DFT+self.Uz+self.H, "Corrected G(T)": self.E_DFT+self.Uz+self.G}
+        print_author_info()
+        print_properties(properties1)
+        print_properties(properties2)
+        print_properties(properties3)
+
+    def correction(self):
+        """free gas correction"""
+        self.Uz = self.Zcorrection().to('eV')
+        self.S = self.Scorrection().to('eV K^-1')
+        self.U = self.Ucorrection().to('eV')
+        self.H = self.U
+        self.G = self.H - self.T * self.S
 
 if __name__ == '__main__':
 
     # 选择自由气体或者吸附气体的修正
     # print("The thermodynamic correction includes two cases: 1. Free gas; 2. Gas adsorbed on the surface")
     # slelect = input('Please enter your choice')
-
-    corre = ThermalCorrection()
-    # corre.Zcorrection()
-    corre.correction()  # 进行修正
-    corre.printout()    # 打印输出
+    pass
+    # corre = ThermalCorrection()
+    # # corre.Zcorrection()
+    # corre.correction()  # 进行修正
+    # corre.printout()    # 打印输出
 
