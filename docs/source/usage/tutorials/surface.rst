@@ -8,13 +8,12 @@ This page provides a series of tutorials on surface and adsorption.
 
 **Input**
 
-First you need to provide CONTCAR.
+First you need to provide POSCAR and CONTCAR.
 
 .. code:: python
 	
-	from pymatsci.surface import Surface   # 引入表面模块
-	s = Surface()                          # 创建表面对象
-	s.get_structure_info([21, 22], 5, 3)   # 输入吸附原子的序号，slb的层数以及弛豫的层数
+	from pymatsci.surface import get_surf_info   
+	get_surf_info([21, 22])   # 输入吸附原子索引，没有则为空
 
 **Output**
 
@@ -35,7 +34,7 @@ Second, you need to provide POSCAR, INCAR, POTCAR, KPOINTS and the submission fi
 
 .. code:: python
 	
-	from pymatsci.surface import Surface   # 引入表面模块
+	from pymatsci.surface import Surface   
 	s = Surface()                          # 创建表面对象
 	s.generate_grid(2, 2, 16, 16, 21)      # 输入在xy方向的超胞数以及网格数，还要输入吸附原子的序数（可通过VESTA可查看）
 
@@ -53,7 +52,7 @@ First make sure the PES folder is empty, then drag the calculated data folder fr
 
 .. code:: python
 	
-	from pymatsci.surface import Surface   # 引入表面模块
+	from pymatsci.surface import Surface   
 	s = Surface()                          # 创建表面对象
 	s.extract_data(2, 2, -215.8)          #  输入在xy方向的超胞数以及干净表面和单个吸附原子的能量总和
 
@@ -62,4 +61,19 @@ Then a data file named data.txt will be generated in the current folder，and dr
 .. figure:: surface/3.png
    :alt: 3
 
- 
+3.3 Generate all surfaces with a given maximum Miller index
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+.. code:: python
+
+	from pymatsci.surface import generate_all_surfs
+	# 输入要切的晶体结构， 最大miller_index，表面层数，是否写入表面，是否写入表面的晶胞
+	generate_all_surfs('CONTCAR', 2, 1, 15, write_surf=True, write_unit_cell=True)
+
+**Output**
+
+.. figure:: surface/4.png
+   :alt: 4
+
+.. figure:: surface/5.png
+   :alt: 5
