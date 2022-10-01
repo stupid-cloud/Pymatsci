@@ -42,7 +42,7 @@ Therefore,
 .. math::
 
 
-   S = {\sum\limits_i {kT\left( {\frac{{\partial \ln {q_i}}}{{\partial T}}} \right)} _V} + k\ln {q_i} = {S_t} + {S_r} + {S_v} + {S_e} + k
+   S = {\sum\limits_i {kT\left( {\frac{{\partial \ln {q_i}}}{{\partial T}}} \right)} _V} + k\ln {q_i} + k = {S_t} + {S_r} + {S_v} + {S_e} + k
 
 Enthalpy (H) and Gibbs free energy (G) can be obtained from U and S:
 

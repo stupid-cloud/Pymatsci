@@ -24,3 +24,4 @@ Contents
 
    usage/index
    api/index
+   topic/index
