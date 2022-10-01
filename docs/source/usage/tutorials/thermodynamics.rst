@@ -145,7 +145,7 @@ First you need to put CONTCAR and OUTCAR in the current folder.
 
 .. code:: python
 
-   from pymatsci.correction import FreeGasCorrection   # 引入热学修正模块
+   from pymatsci.thermodynamics import FreeGasCorrection   # 引入热学修正模块
    t = FreeGasCorrection(298.15, 101325, True, 3)      # 输入温度(K)、压强(Pa)、是否线型分子，自旋多重度
    t.correction()                             # 自由分子修正
    t.printout()                                        # 打印输出
@@ -181,7 +181,7 @@ Then, you need to put CONTCAR and OUTCAR in the current folder.
 
 .. code:: python
 
-   from pymatsci.correction import AdsorbedGasCorrection  
+   from pymatsci.thermodynamics import AdsorbedGasCorrection  
    a = AdsorbedGasCorrection(298.15)                      # 输入温度(K)
    a.correction()                                         # 吸附分子修正
    a.printout()                                           # 打印输出
@@ -231,21 +231,25 @@ where k is the Boltzmann constant. Equation (3) can be further written as
     = {E_{ads}} - \frac{{\rm{n}}}{2}\left( {{\mu _{{O_2}}}(T,{p^\theta }) + kT\ln (\frac{{{p_{{O_2}}}}}{{{p^\theta }}})} \right)
    \end{array} (7)
 
-
 where Eads is the adsorption energy at 0 K.
 
+[1] K. Reuter, M. Scheffler, Composition, structure, and stability ofRuO2(110)as a function of oxygen pressure, Phys. Rev. B 65 (3) (2001).
+
+[2] P. Maldonado, L.Z. Evins, P.M. Oppeneer, Ab Initio Atomistic Thermodynamics of Water Reacting with Uranium Dioxide Surfaces, The Journal of Physical Chemistry C 118 (16) (2014) 8491-8500.
 
 2.2.2 Phase Diagrams (T-p)
 ''''''''''''''''''''''''''
 
 .. code:: python
-
-    t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
-    # 多次重复计算不同的数据，综合比较得到最终的相图
-    data1 = t.get_Tp(3/2, -16.351, 4/2, -18.881)  # 输入覆盖度，吸附能，覆盖度，吸附能
-    data2 = t.get_Tp(3 / 2, -16.351, 0, 0)  # 输入覆盖度，吸附能，覆盖度，吸附能
-    data = np.hstack((data1, data2))
-    # np.savetxt('data.txt', data)  # 保存数据
+   
+   from pymatsci.thermodynamics import Abthermodynamics
+   import numpy as np
+   t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
+   # 多次重复计算不同的数据，综合比较得到最终的相图
+   data1 = t.get_Tp(3/2, -16.351, 4/2, -18.881)  # 输入覆盖度，吸附能，覆盖度，吸附能
+   data2 = t.get_Tp(3 / 2, -16.351, 0, 0)  # 输入覆盖度，吸附能，覆盖度，吸附能
+   data = np.hstack((data1, data2))
+   # np.savetxt('data.txt', data)  # 保存数据
 
 **Output**
 
@@ -257,11 +261,13 @@ where Eads is the adsorption energy at 0 K.
 
 .. code:: python
 
-    t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
-    data1 = t.get_T(1/2, -5.134, 0.21)  # 输入覆盖度，吸附能，气体分压
-    data2 = t.get_T(2/2, -10.652, 0.21)  # 输入覆盖度，吸附能，气体分压
-    data = np.hstack((data1, data2))
-    # np.savetxt('data.txt', data)  # 保存数据
+   from pymatsci.thermodynamics import Abthermodynamics
+   import numpy as np
+   t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
+   data1 = t.get_T(1/2, -5.134, 0.21)  # 输入覆盖度，吸附能，气体分压
+   data2 = t.get_T(2/2, -10.652, 0.21)  # 输入覆盖度，吸附能，气体分压
+   data = np.hstack((data1, data2))
+   # np.savetxt('data.txt', data)  # 保存数据
 
 **Output**
 
@@ -273,12 +279,13 @@ where Eads is the adsorption energy at 0 K.
 
 .. code:: python
 
-    t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
-    # 多次重复计算不同的数据，综合比较得到最终的相图
-    data1 = t.get_Tp(3/2, -16.351, 4/2, -18.881)  # 输入覆盖度，吸附能，覆盖度，吸附能
-    data2 = t.get_Tp(3 / 2, -16.351, 0, 0)  # 输入覆盖度，吸附能，覆盖度，吸附能
-    data = np.hstack((data1, data2))
-    # np.savetxt('data.txt', data)  # 保存数据
+   from pymatsci.thermodynamics import Abthermodynamics
+   import numpy as np
+   t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
+   data1 = t.get_p(1/2, -5.134, 300)  # 输入覆盖度，吸附能，温度
+   data2 = t.get_p(2/2, -10.652, 300)  # 输入覆盖度，吸附能，温度
+   data = np.hstack((data1, data2))
+   print(data)  # 打印结果
 
 **Output**
 

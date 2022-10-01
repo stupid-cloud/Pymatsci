@@ -4,11 +4,16 @@ from scipy import constants as const
 from pymatsci.processing import VaspProcess
 from pymatgen.core.units import Unit, FloatWithUnit
 from pymatsci.printout import print_properties, print_author_info
+import requests
+import re
+
+
 pi = const.pi
 k = const.k
 k = FloatWithUnit(k, Unit('J K^-1'))  # 玻尔兹曼常量（eV/K）
 h = const.h
 h = FloatWithUnit(h, Unit('J s'))  # 普朗克常量 (J/s)
+Na = const.Avogadro
 
 
 class FreeGasCorrection(object):
@@ -65,7 +70,7 @@ class FreeGasCorrection(object):
         Ev = 0
         for v in freq:  # 频率求和
             theta = h*v/k
-            Ev += k*theta*(1/2+1/(math.pow(math.e, theta/self.T)-1))  # 振动贡献
+            Ev += k*theta*(1/(math.pow(math.e, theta/self.T)-1))  # 振动贡献
         # Ev = FloatWithUnit(Ev, Unit('J'))
         Ee = 0  # 电子贡献
         return FloatWithUnit(Et+Er+Ev+Ee, Unit('J'))
@@ -134,8 +139,8 @@ class FreeGasCorrection(object):
         properties2 = {'Energy of DFT (E_DFT)': self.E_DFT, "Zero-point energy (E_ZPE)": self.Uz,
                       "Thermal correction to U(T)": self.U, "Thermal correction to H(T)": self.H, "Thermal correction to G(T)": self.G, "Entropy S": self.S,
                       "Entropy contribution T*S": self.T * self.S}
-        properties3 = {"corrected E_DFT": self.E_DFT+self.Uz, "Corrected U(T)": self.E_DFT+self.Uz+self.U,
-                      "Corrected H(T)": self.E_DFT+self.Uz+self.H, "Corrected G(T)": self.E_DFT+self.Uz+self.G}
+        properties3 = {"corrected E_DFT": self.E_DFT+self.Uz, "Corrected U(T)": self.E_DFT+self.U,
+                      "Corrected H(T)": self.E_DFT+self.H, "Corrected G(T)": self.E_DFT+self.G}
         print_author_info()
         print_properties(properties1)
         print_properties(properties2)
@@ -145,7 +150,7 @@ class FreeGasCorrection(object):
         """free gas correction"""
         self.Uz = self.Zcorrection().to('eV')
         self.S = self.Scorrection().to('eV K^-1')
-        self.U = self.Ucorrection().to('eV')
+        self.U = self.Ucorrection().to('eV') + self.Uz
         self.H = self.U + (self.p*self.V).to('eV')
         self.G = self.H - self.T * self.S
 
@@ -165,7 +170,7 @@ class AdsorbedGasCorrection(object):
         Ev = 0    # 振动贡献
         for v in freq:  # 频率求和
             theta = h*v/k
-            Ev += k*theta*(1/2+1/(math.pow(math.e, theta/self.T)-1))
+            Ev += k*theta*(1/(math.pow(math.e, theta/self.T)-1))
         # Ev = FloatWithUnit(Ev, Unit('J'))
         return FloatWithUnit(Ev, Unit('J'))
 
@@ -206,8 +211,8 @@ class AdsorbedGasCorrection(object):
         properties2 = {'Energy of DFT (E_DFT)': self.E_DFT, "Zero-point energy (E_ZPE)": self.Uz,
                       "Thermal correction to U(T)": self.U, "Thermal correction to H(T)": self.H, "Thermal correction to G(T)": self.G, "Entropy S": self.S,
                       "Entropy contribution T*S": self.T * self.S}
-        properties3 = {"corrected E_DFT": self.E_DFT+self.Uz, "Corrected U(T)": self.E_DFT+self.Uz+self.U,
-                      "Corrected H(T)": self.E_DFT+self.Uz+self.H, "Corrected G(T)": self.E_DFT+self.Uz+self.G}
+        properties3 = {"corrected E_DFT": self.E_DFT+self.Uz, "Corrected U(T)": self.E_DFT+self.U,
+                      "Corrected H(T)": self.E_DFT+self.H, "Corrected G(T)": self.E_DFT+self.G}
         print_author_info()
         print_properties(properties1)
         print_properties(properties2)
@@ -217,18 +222,75 @@ class AdsorbedGasCorrection(object):
         """free gas correction"""
         self.Uz = self.Zcorrection().to('eV')
         self.S = self.Scorrection().to('eV K^-1')
-        self.U = self.Ucorrection().to('eV')
+        self.U = self.Ucorrection().to('eV') + self.Uz
         self.H = self.U
         self.G = self.H - self.T * self.S
 
+
+class Abthermodynamics(object):
+    """从头算热力学"""
+    def __init__(self, url):
+        self.url = url
+
+    def therm_table(self, url):
+        """获取热力学表"""
+        r = requests.get(url)
+        # print(r.text)
+        data = np.array(re.findall('<TD>(.+)</TD>', r.text))
+        data = data.reshape((int(len(data) / 8)), 8)
+        return data
+
+    def to_dict(self, url):
+        data = self.therm_table(url)
+        dict_data = dict()
+        for i in range(len(data[:, 0])):
+            dict_data[data[:, 0][i]] = data[i, 1:]
+        return dict_data
+
+    def get_T(self, n, E_ads, p):
+        """固定p，得到T"""
+        table = self.therm_table(url=self.url)
+        data = table[:, [0, 4]].astype('float')
+        T = table[:, 0].astype('float')
+        S = table[:, 2].astype('float')
+        HT_H = table[:, 4].astype('float')
+        A = E_ads-n*(HT_H-HT_H[0]-T*S/1000)/Na*1000/1.602177E-19
+        B = float(n*k.to('eV K^-1')*math.log(p))*T
+        data[:, 0] = T
+        data[:, 1] = A-B
+        return data
+
+    def get_p(self, n, E_ads, T):
+        """固定T，得到p"""
+        dict_data = self.to_dict(self.url)
+        S = float(dict_data[str(T)][1])
+        dH = float(dict_data[str(T)][3])-float(dict_data[str(0)][3])
+        A = E_ads - n * (dH - T * S / 1000) / Na * 1000 / 1.602177E-19
+        B = float(n * k.to('eV K^-1') * T)
+        return '{}-({}*T)'.format(A, B)
+
+    def get_Tp(self, n1, E_ads1, n2, E_ads2):
+        table = self.therm_table(self.url)
+        data = table[1:, [0, 4]].astype('float')
+        T = table[1:, 0].astype('float')
+        S = table[1:, 2].astype('float')
+        HT_H = table[1:, 4].astype('float')
+        A1 = E_ads1 - n1 * (HT_H - HT_H[0] - T * S / 1000) / Na * 1000 / 1.602177E-19
+        A2 = E_ads2 - n2 * (HT_H - HT_H[0] - T * S / 1000) / Na * 1000 / 1.602177E-19
+        B1 = -n1 * float(k.to('eV K^-1')) * T
+        B2 = -n2 * float(k.to('eV K^-1')) * T
+        p = (A1-A2)/(B2-B1)
+        data[:, 0] = T
+        data[:, 1] = p
+        return data
+
+
 if __name__ == '__main__':
 
-    # 选择自由气体或者吸附气体的修正
-    # print("The thermodynamic correction includes two cases: 1. Free gas; 2. Gas adsorbed on the surface")
-    # slelect = input('Please enter your choice')
-    pass
-    # corre = ThermalCorrection()
-    # # corre.Zcorrection()
-    # corre.correction()  # 进行修正
-    # corre.printout()    # 打印输出
+    t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
+    data1 = t.get_p(1/2, -5.134, 300)  # 输入覆盖度，吸附能，温度
+    data2 = t.get_p(2/2, -10.652, 300)  # 输入覆盖度，吸附能，温度
+    data = np.hstack((data1, data2))
+    print(data)  # 打印结果
+
 
