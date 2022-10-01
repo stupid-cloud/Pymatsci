@@ -1,9 +1,11 @@
-2. Thermal correction
+2. Thermodynamics
 >>>>>>>>>>>>>>>>>>>>>
 
+2.1 Thermodynamic correction
+::::::::::::::::::::::::::::
 
-2.1 Theory
-::::::::::
+2.1.1 Theory
+''''''''''''
 
 Pymatsci uses a thermal correction similar to Gaussian, and the detailed thermodynamic derivation can be found in Atkins' Physical Chemistry.
 The gases are assumed to be indistinguishable perfect gases with no interactions between them. The expressions for the internal energy (U) and entropy (S) of N molecules can be known from statistical thermodynamics:
@@ -132,8 +134,8 @@ where E\ :sub:`DFT` is the energy of density functional calculations.
 
 [3] V. Wang, N. Xu, J.C. Liu, G. Tang, W.T. Geng, VASPKIT: A User-Friendly Interface Facilitating High-Throughput Computing and Analysis Using VASP Code, Computer Physics Communications 267, 108033 (2021).
 
-2.1 Free gas
-::::::::::::
+2.1.1 Free gas
+''''''''''''''
 
 For free gases, consider translational, rotational, vibrational and electron contributions. For linear molecules, degree of vibrational freedom is 3n - 5, Pymatsci will neglect smallest 5 frequencies. For non-linear molecules, degree of vibrational freedom is 3n - 6,Pymatsci will neglect smallest 6 frequencies. n is the atomic number of the molecule.
 
@@ -150,11 +152,11 @@ First you need to put CONTCAR and OUTCAR in the current folder.
 
 **Output**
 
-.. figure:: thermalcorrection/1.png
+.. figure:: thermodynamics/1.png
    :alt: 1
 
-2.2 Adsorbed gas
-::::::::::::::::
+2.1.2 Adsorbed gas
+''''''''''''''''''
 
 For adsorbed molecules, pymatsci uses the calculation method of vaspkit. Unlike gas molecules, adsorbed molecules form chemical bonds with substrate, which limits the translational and rotational freedom of the adsorbed molecules. So the contribution of translation and rotation to entropy and enthalpy is significantly reduced (so called hindered translator / hindered rotor model). This does not mean no translational or rotational contribution.
 
@@ -186,7 +188,99 @@ Then, you need to put CONTCAR and OUTCAR in the current folder.
 
 **Output**
 
-.. figure:: thermalcorrection/2.png
+.. figure:: thermodynamics/2.png
    :alt: 2
 
- 
+2.2 Ab initio thermodynamics
+::::::::::::::::::::::::::::
+
+2.2.1 Theory
+''''''''''''
+
+The energy calculated by DFT only gives the energy at zero temperature (T) and zero pressure (p). However, for the real reaction conditions, the interaction of O2 molecules with the U surface requires the consideration of temperature and O2 pressure, which is achieved by using the "ab initio thermodynamics" approach. The Gibbs free energy of adsorption considering temperature and pressure can be described as
+
+.. math::
+
+   {G_{{\rm{ads}}}} = {G_{adsorbate{\rm{s}}/slab}} - {G_{slab}} - {\rm{n}}{G_{adsorbates}}  (1)
+
+where n is the number of adsorbates, Gadsorbates/slab is the Gibbs free energy of the adsorbates/slab system, Gslab is the Gibbs free energy of the slab, and Gadsorbates is the Gibbs free energy of the adsorbates.
+The energy calculated by DFT (E) is related to a thermodynamical quantity only in a restricted way, corresponding to the Gibbs free energy at zero temperature and neglecting zero-point vibrations. It is known from physical chemistry that Gibbs free energy can thus be written as
+     
+.. math::
+
+   G(T,{\rm{p}}) = E + U(T,{\rm{p}}) + pV - TS(T,p)  (2)
+
+In general, the volume effect and the vibration contribution to the Gibbs free energy of the condensed phase are small. On the other hand, for adsorption systems, the adsorption of gas molecules will not significantly change the vibrational modes of the surface, and the contributions from temperature and pressure will be canceled. Therefore, equation (3) can be written as
+     
+.. math::
+     
+   {G_{{\rm{ads}}}} = {E_{adsorbate{\rm{s}}/slab}} - {E_{slab}} - {\rm{n}}{G_{adsorbates}}   (3)
+
+Here is an example of oxygen molecule. The adsorbates considered are O atoms whose chemical potential is half that of gaseous O2 molecules. Assuming that the adsorbed gas is the perfect molecule, the chemical potential of the O atom can be expressed as
+      
+.. math::
+   {\mu _O} = \frac{1}{2}{\mu _{{{\rm{O}}_2}}}(T,p) = \frac{1}{2}\left( {{E_{{O_2}}} + {\mu _{{{\rm{O}}_2}}}(T,{p^\theta }) + kT\ln \left( {\frac{{{p_{{O_2}}}}}{{{p^\theta }}}} \right)} \right)   (4)
+
+where k is the Boltzmann constant. Equation (3) can be further written as
+
+.. math::
+
+   \begin{array}{c}
+   {G_{{\rm{ads}}}} = {E_{O/slab}} - {E_{slab}} - n{\mu _O}\\
+    = {E_{O/slab}} - {E_{slab}} - \frac{n}{2}{E_{{O_2}}} - \frac{{\rm{n}}}{2}\left( {{\mu _{{O_2}}}(T,{p^\theta }) + kT\ln (\frac{{{p_{{O_2}}}}}{{{p^\theta }}})} \right)\\
+    = {E_{ads}} - \frac{{\rm{n}}}{2}\left( {{\mu _{{O_2}}}(T,{p^\theta }) + kT\ln (\frac{{{p_{{O_2}}}}}{{{p^\theta }}})} \right)
+   \end{array} (7)
+
+
+where Eads is the adsorption energy at 0 K.
+
+
+2.2.2 Phase Diagrams (T-p)
+''''''''''''''''''''''''''
+
+.. code:: python
+
+    t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
+    # 多次重复计算不同的数据，综合比较得到最终的相图
+    data1 = t.get_Tp(3/2, -16.351, 4/2, -18.881)  # 输入覆盖度，吸附能，覆盖度，吸附能
+    data2 = t.get_Tp(3 / 2, -16.351, 0, 0)  # 输入覆盖度，吸附能，覆盖度，吸附能
+    data = np.hstack((data1, data2))
+    # np.savetxt('data.txt', data)  # 保存数据
+
+**Output**
+
+.. figure:: thermodynamics/3.png
+   :alt: 3
+
+2.2.3 Phase Diagrams (T)
+''''''''''''''''''''''''
+
+.. code:: python
+
+    t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
+    data1 = t.get_T(1/2, -5.134, 0.21)  # 输入覆盖度，吸附能，气体分压
+    data2 = t.get_T(2/2, -10.652, 0.21)  # 输入覆盖度，吸附能，气体分压
+    data = np.hstack((data1, data2))
+    # np.savetxt('data.txt', data)  # 保存数据
+
+**Output**
+
+.. figure:: thermodynamics/4.png
+   :alt: 4
+
+2.2.4 Phase Diagrams (p)
+''''''''''''''''''''''''
+
+.. code:: python
+
+    t = Abthermodynamics('https://janaf.nist.gov/tables/O-029.html')
+    # 多次重复计算不同的数据，综合比较得到最终的相图
+    data1 = t.get_Tp(3/2, -16.351, 4/2, -18.881)  # 输入覆盖度，吸附能，覆盖度，吸附能
+    data2 = t.get_Tp(3 / 2, -16.351, 0, 0)  # 输入覆盖度，吸附能，覆盖度，吸附能
+    data = np.hstack((data1, data2))
+    # np.savetxt('data.txt', data)  # 保存数据
+
+**Output**
+
+.. figure:: thermodynamics/5.png
+   :alt: 5
