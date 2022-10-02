@@ -34,9 +34,9 @@ Second, you need to provide POSCAR, INCAR, POTCAR, KPOINTS and the submission fi
 
 .. code:: python
 	
-	from pymatsci.surface import Surface   
-	s = Surface()                          # 创建表面对象
-	s.generate_grid(2, 2, 16, 16, 21)      # 输入在xy方向的超胞数以及网格数，还要输入吸附原子的序数（可通过VESTA可查看）
+	from pymatsci.surface import generate_grid   
+	# 输入提交脚本，在xy方向的超胞数以及网格数，还要输入吸附原子的序数（可通过VESTA可查看）
+	generate_grid('vasp.pbs', 2, 2, 16, 16, 21)      
 
 **Output**
 
@@ -52,9 +52,9 @@ First make sure the PES folder is empty, then drag the calculated data folder fr
 
 .. code:: python
 	
-	from pymatsci.surface import Surface   
-	s = Surface()                          # 创建表面对象
-	s.extract_data(2, 2, -215.8)          #  输入在xy方向的超胞数以及干净表面和单个吸附原子的能量总和
+	from pymatsci.surface import extract_data   
+	#  输入在xy方向的超胞数以及干净表面和单个吸附原子的能量总和
+	extract_data(2, 2, -215.8)          
 
 Then a data file named data.txt will be generated in the current folder，and drag it into origin to draw
 
